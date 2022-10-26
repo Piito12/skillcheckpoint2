@@ -28,13 +28,32 @@ votecommentRounter.get("/:id/comments/:commentId/vote", async (req, res) => {
 
 votecommentRounter.post("/:id/comments/:commentId/upvote", async (req, res) => {
   const commentId = req.params.commentId;
-
-  await pool.query(
-    `insert into vote_comment (user_id, comment_id, status)
-    values ($1, $2 , 'upvote')
-    `,
-    [1, commentId]
+  const isVoted = await pool.query(
+    `
+  select * from vote_comment
+  where comment_id = $1 and status = 'upvote'
+  `,
+    [commentId]
   );
+  // console.log(isVoted);
+
+  if (isVoted.rowCount === 0) {
+    await pool.query(
+      `insert into vote_comment (user_id, comment_id, status)
+      values ($1, $2 , 'upvote')
+      `,
+      [1, commentId]
+    );
+  } else {
+    await pool.query(
+      `
+      delete from vote_comment
+      where  comment_id = $1 and status = 'upvote'
+      `,
+      [commentId]
+    );
+    return res.send("downvot deleteds");
+  }
 
   return res.json({
     message: "upvote is successful!!",
@@ -46,13 +65,32 @@ votecommentRounter.post(
   async (req, res) => {
     const commentId = req.params.commentId;
 
-    await pool.query(
+    const isVoted = await pool.query(
       `
-    insert into vote_comment (user_id, comment_id, status)
-    values ($1, $2 , 'downvote')
+    select * from vote_comment
+    where comment_id = $1 and status = 'downvote'
     `,
-      [1, commentId]
+      [commentId]
     );
+
+    if (isVoted.rowCount === 0) {
+      await pool.query(
+        `
+      insert into vote_comment (user_id, comment_id, status)
+      values ($1, $2 , 'downvote')
+      `,
+        [1, commentId]
+      );
+    } else {
+      await pool.query(
+        `
+        delete from vote_comment
+        where  comment_id = $1 and status = 'downvote'
+        `,
+        [commentId]
+      );
+      return res.send("downvot deleteds");
+    }
 
     return res.json({
       message: "downvote is successful!!",

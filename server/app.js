@@ -18,8 +18,8 @@ async function init() {
   app.use('/posts', votePostRouter);
   app.use('/posts', votecommentRounter)
   
-  app.get("/", async (req, res) => {
-    res.send("Hello world!! THIS IS POSTS APP");
+  app.get("/", (req, res) => {
+    return res.send("Hello world!! THIS IS POSTS APP");
   });
 
   app.get("*", (req, res) => {

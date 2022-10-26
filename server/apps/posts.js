@@ -82,10 +82,6 @@ postRouter.post("/", async (req, res) => {
     ]
   );
 
-  await pool.query(`
-  insert into category()
-  `);
-
   return res.status(200).json({
     message: "Createds posts Successfull!!",
   });
