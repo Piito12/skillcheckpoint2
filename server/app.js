@@ -5,6 +5,7 @@ import postRouter from "./apps/posts.js";
 import commentRouter from "./apps/comments.js";
 import votePostRouter from "./apps/vote_post.js";
 import votecommentRounter from "./apps/vote_comment.js";
+import mediaRouter from "./apps/media.js";
 
 async function init() {
   const app = express();
@@ -16,7 +17,8 @@ async function init() {
   app.use('/posts' , postRouter);
   app.use('/posts', commentRouter);
   app.use('/posts', votePostRouter);
-  app.use('/posts', votecommentRounter)
+  app.use('/posts', votecommentRounter);
+  app.use('/posts', mediaRouter);
   
   app.get("/", (req, res) => {
     return res.send("Hello world!! THIS IS POSTS APP");
